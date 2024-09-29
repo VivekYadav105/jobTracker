@@ -14,18 +14,6 @@ const resume = {
 
 const jobs = new Map()
 
-
-jobs.set(
-    'a',    
-    {
-    role:"AI Engineering-Associate",
-    company:"blackrock",
-    trackSite:"https://blackrock.wd1.myworkdayjobs.com/en-US/BlackRock_Professional/userHome",
-    appliedOn:"28-09-2024",
-    status:"Applied"
-    }
-)
-
 const handler = {
     set(target, property, value) {
         if (property === 'value') {
@@ -60,6 +48,8 @@ CloseSearchButton.addEventListener('click',()=>{
     }
     SearchButton.classList.remove('close')
 })
+
+JobForm.addEventListener('submit',(e)=>handleSubmit(e))
 
 SearchButton.addEventListener('click',()=>{
     SearchWrapper.classList.remove('close')
@@ -210,9 +200,9 @@ function createJob(key,value){
             </a>
         </article>`
     
-        
+        console.log(jobWrapper)
 
-        jobWrapper.querySelector('select.status').addEventListener('change', function(event) {
+        jobWrapper.querySelector('select').addEventListener('change', function(event) {
             changeStatus(event, key);
         });
         
@@ -275,6 +265,4 @@ function renderJobs(){
     console.log(jobs)
 }
 
-document.onload = ()=>{
-    renderJobs()
-}
+document.onload = renderJobs()
