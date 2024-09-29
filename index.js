@@ -12,21 +12,46 @@ const resume = {
     workExperience:{},
 }
 
-const jobs = [
-    {
-        role:"AI Engineering-Associate",
-        company:"blackrock",
-        trackSite:"https://blackrock.wd1.myworkdayjobs.com/BlackRock_Professional/job/Gurgaon-India/AI-Engineering-Associate_R244378/apply",
-        appliedOn:"28-09-2024",
-        status:"Applied"
-    }
-]
+const jobs = new Map()
 
-const JobWrapper = document.getElementById('job-board')
+
+jobs.set(
+    'a',    
+    {
+    role:"AI Engineering-Associate",
+    company:"blackrock",
+    trackSite:"https://blackrock.wd1.myworkdayjobs.com/en-US/BlackRock_Professional/userHome",
+    appliedOn:"28-09-2024",
+    status:"Applied"
+    }
+)
+
+const handler = {
+    set(target, property, value) {
+        if (property === 'value') {
+            console.log(`Value changed from ${target[property]} to ${value}`);
+            // Trigger your event here
+            onValueChanged(value);
+        }
+        target[property] = value;
+        return true;
+    }
+};
+
+const Wrapper = document.querySelector('.wrapper')
+const JobsWrapper = document.createElement('div')
+const AddJobWrapper = document.getElementById('addJob-wrapper')
+JobsWrapper.setAttribute('id','job-board')
+Wrapper.appendChild(JobsWrapper)
 const SearchWrapper = document.querySelector('.search-wrapper')
 
 const SearchButton = document.getElementById('search')
+const JobForm = document.forms[0]
 const CloseSearchButton = document.getElementById('close-search')
+const CloseAddJobButton = document.getElementById('close-addJob')
+const AddJobButton = document.querySelector('#add-job')
+const FormHeading = document.querySelector('#form-heading')
+
 const SearchBar = document.getElementById('job-search')
 
 CloseSearchButton.addEventListener('click',()=>{
@@ -41,56 +66,215 @@ SearchButton.addEventListener('click',()=>{
     SearchButton.classList.add('close')
 })
 
-function createJob(e){
-    const jobLink = document.createElement('a')
-        jobLink.setAttribute('href',e.trackSite)
-        jobLink.setAttribute('target','_blank')
-        const job = document.createElement('div')
-        job.classList.add('job')
-        const jobLogo = document.createElement('img')
-        jobLogo.setAttribute('src', "https://icon.horse/icon/stackoverflow.com")
+AddJobButton.addEventListener('click',()=>{
+    AddJobWrapper.classList.remove('close')
+    AddJobButton.classList.add('close')
+           
+    const queryParams = new URLSearchParams({
+        popUp:'add'
+    }).toString();
 
-        const companyInfo = document.createElement('article')
-        const applicationInfo = document.createElement('article')
-        companyInfo.classList.add('company-info')
-        applicationInfo.classList.add('application-info')
-        
-        const company = document.createElement('span')
-        company.classList.add('company')
-        company.innerText = e.company
-        
-        const role = document.createElement('span')
-        role.classList.add('role')
-        role.innerText = e.role
-        
-        const status = document.createElement('span')
-        status.classList.add('status')
-        status.innerText = e.status
+    FormHeading.innerHTML = `Add Job`
 
-        const appliedOn = document.createElement('span')
-        appliedOn.classList.add('applied-on')
-        appliedOn.innerText = e.appliedOn
+    const urlWithParams = `/?${queryParams}`;
+    window.history.replaceState({}, '', urlWithParams);
+})
 
-        companyInfo.appendChild(company)
-        companyInfo.appendChild(role)
+CloseAddJobButton.addEventListener('click',()=>{
+    closeJobPanel()
+})
 
-        applicationInfo.append(status)
-        applicationInfo.append(appliedOn)
+function editJobPanel(key){
+    const job = jobs.get(key)
+    const [role,company,appliedOn,trackLink,status] = JobForm
+    role.value = job.role
+    company.value = job.company
+    appliedOn.value = parseDate(job.appliedOn,true)
+    trackLink.value = job.trackSite
+    status.value = job.status
+    const queryParams = new URLSearchParams({
+        popUp:'edit',
+        key:key
+    }).toString();
 
-        job.appendChild(jobLogo)
-        job.appendChild(companyInfo)
-        job.appendChild(applicationInfo)
+    FormHeading.innerHTML = `Edit Job - <span>${key}<span>`
 
-        jobLink.appendChild(job)
+    const urlWithParams = `/?${queryParams}`;
+    window.history.replaceState({}, '', urlWithParams);
+    AddJobWrapper.classList.remove('close')
 
-        
-        return jobLink
 }
 
+function closeJobPanel(){
+    AddJobButton.classList.remove('close')
+    AddJobWrapper.classList.add('close')
+    const currentUrl = window.location.href;
+    const baseUrl = currentUrl.split('?')[0];
+    window.history.replaceState({}, '', baseUrl);
+}
 
-const Jobs = jobs.map(e=>createJob(e))
+    // const JobWrapper = document.createElement('div')
+    // JobWrapper.classList.add('job-wrapper')
+    // const JobLink = document.createElement('a')
+    // JobLink.setAttribute('href',value.trackSite)
+    // JobLink.setAttribute('target','_blank')
+    // const job = document.createElement('div')
+    // job.classList.add('job')
+    // const jobLogo = document.createElement('img')
+    // jobLogo.setAttribute('src', "https://icon.horse/icon/stackoverflow.com")
 
-Jobs.forEach(e=>(
-    JobWrapper.appendChild(e)
-))
+    // const companyInfo = document.createElement('article')
+    // const applicationInfo = document.createElement('article')
+    // const jobActions = document.createElement('article')
+
+    // companyInfo.classList.add('company-info')
+    // applicationInfo.classList.add('application-info')
+    // jobActions.classList.add('actions')
+
+    // const company = document.createElement('span')
+    // company.classList.add('company')
+    // company.innerText = value.company
     
+    // const role = document.createElement('span')
+    // role.classList.add('role')
+    // role.innerText = value.role
+    
+    // const status = document.createElement('span')
+    // status.classList.add('status')
+    // status.classList.add(value.status)
+    // status.innerText = value.status
+
+    // const appliedOn = document.createElement('span')
+    // appliedOn.classList.add('applied-on')
+    // appliedOn.innerText = value.appliedOn
+
+    // companyInfo.appendChild(company)
+    // companyInfo.appendChild(role)
+
+    // applicationInfo.append(status)
+    // applicationInfo.append(appliedOn)
+
+    // jobActions.innerHTML = `
+    //     <button class="secondary-btn" onClick="editJob(e)">Edit</button>
+    //     <button class="secondary-btn" onClick="deleteJob(e)">Delete</button>
+    // `
+
+    // job.appendChild(jobLogo)
+    // job.appendChild(companyInfo)
+    // job.appendChild(applicationInfo)
+
+    // JobLink.appendChild(job)
+
+    // JobWrapper.appendChild(JobLink)
+    // JobWrapper.appendChild(jobActions)
+
+    
+    // return JobWrapper
+
+function changeStatus(event,key){
+    const value = event.target.selectedOptions[0].value
+    const job = jobs.get(key)
+    jobs.set(key,{...job,status:value})
+    renderJobs()
+}
+
+function createJob(key,value){
+    const jobWrapper = document.createElement('div');
+    jobWrapper.classList.add('job-wrapper');
+    jobWrapper.innerHTML = 
+        `<div class="job">
+            <img src="https://icon.horse/icon/stackoverflow.com">
+            <article class="company-info">
+                <span class="company">${value.company}</span>
+                <span class="role">${value.role}</span>
+            </article>
+            <article class="application-info">
+                <article style="position:relative" class='status ${value.status}'>
+                    <select onChange={changeStatus(event,'${key}')} style='width:100%;cursor:pointer;border:0;border-radius:0;background-color:transparent'>
+                        <option value=''></option>
+                        <option value='Applied'>Applied</option>
+                        <option value='Scheduled'>Scheduled</option>
+                        <option value='Rejected'>Rejected</option>
+                        <option value='Approved'>Approved</option>
+                    </select>
+                    <span style="pointer-events:none;position:absolute;top:50%;left:calc(50% - 10px);transform:translate(-50%,-50%)">${value.status}</span>
+                </article>
+                <span class="applied-on">${value.appliedOn}</span>
+            </article>
+        </div>
+        <article class="actions">
+            <button id='edit-${key}' class="secondary-btn">Edit</button>
+            <button id='delete-${key}' class="secondary-btn">Delete</button>
+            <a href=${value.trackSite} target='_black'>
+                <button class="secondary-btn">Visit</button>
+            </a>
+        </article>`
+    
+        
+
+        jobWrapper.querySelector('select.status').addEventListener('change', function(event) {
+            changeStatus(event, key);
+        });
+        
+        jobWrapper.querySelector(`#edit-${key}`).addEventListener('click', function() {
+            editJobPanel(key);
+        });
+
+        jobWrapper.querySelector(`#delete-${key}`).addEventListener('click', function() {
+            deleteJob(key);
+        });
+
+        return jobWrapper
+}
+
+function deleteJob(key){
+    console.log(jobs)
+    jobs.delete(key)
+    renderJobs()
+}
+
+function parseDate(dateString,reverse=false,currentFormat='dd-mm-yyyy'){
+    if(reverse){
+        let day,month,year;
+        if(currentFormat=='dd-mm-yyyy') [day,month,year] = dateString.split('-')
+        const date =  new Date(`${year}-${month}-${day}`)
+        console.log(date)
+        return `${year}-${month}-${day}`; 
+    }
+    const date = new Date(dateString).toLocaleDateString('en-US',{day:'2-digit',year:"numeric",month:"2-digit"})
+    const [month,day,year] = date.split('/')
+    return `${day}-${month}-${year}`
+}
+
+function handleSubmit(e){
+    e.preventDefault()
+    const [role,company,appliedOn,trackLink,applied] = e.target
+    const job = {
+        role:role.value,
+        company:company.value,
+        status:applied.selectedOptions[0].value,
+        appliedOn:parseDate(appliedOn.value),
+        trackLink:trackLink.value
+    }
+    const params = window.location.href.split('?')[1].split('&')
+    const submitType = params[0].split('=')[1]
+    console.log(submitType)
+    if(submitType=='add'){
+        jobs.set(Date.now(),job)
+    }else if(submitType=='edit'){
+        const key = params[1].split('=')[1]
+        jobs.set(key,job)
+    }
+    closeJobPanel()
+    renderJobs()
+}
+
+function renderJobs(){
+    JobsWrapper.innerHTML = ''
+    jobs.forEach((value,key)=>JobsWrapper.appendChild(createJob(key,value)))
+    console.log(jobs)
+}
+
+document.onload = ()=>{
+    renderJobs()
+}
