@@ -1,30 +1,4 @@
-const resume = {
-    fname:"",
-    lname:"",
-    contact:"9398077470",
-    github:"VivekYadav105",
-    linkedin:"",
-    portfolio:"portfolio-vy.vercel.app",
-    address:{},
-    education:{},
-    skills:{},
-    projects:{},
-    workExperience:{},
-}
-
 const jobs = new Map()
-
-const handler = {
-    set(target, property, value) {
-        if (property === 'value') {
-            console.log(`Value changed from ${target[property]} to ${value}`);
-            // Trigger your event here
-            onValueChanged(value);
-        }
-        target[property] = value;
-        return true;
-    }
-};
 
 const Wrapper = document.querySelector('.wrapper')
 const JobsWrapper = document.createElement('div')
