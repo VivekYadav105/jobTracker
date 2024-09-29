@@ -14,18 +14,6 @@ const resume = {
 
 const jobs = new Map()
 
-
-jobs.set(
-    'a',    
-    {
-    role:"AI Engineering-Associate",
-    company:"blackrock",
-    trackSite:"https://blackrock.wd1.myworkdayjobs.com/en-US/BlackRock_Professional/userHome",
-    appliedOn:"28-09-2024",
-    status:"Applied"
-    }
-)
-
 const handler = {
     set(target, property, value) {
         if (property === 'value') {
@@ -60,6 +48,8 @@ CloseSearchButton.addEventListener('click',()=>{
     }
     SearchButton.classList.remove('close')
 })
+
+JobForm.addEventListener('submit',(e)=>handleSubmit(e))
 
 SearchButton.addEventListener('click',()=>{
     SearchWrapper.classList.remove('close')
@@ -179,36 +169,52 @@ function changeStatus(event,key){
 }
 
 function createJob(key,value){
-    return `
-        <div class="job-wrapper">
-            <div class="job">
-                <img src="https://icon.horse/icon/stackoverflow.com">
-                <article class="company-info">
-                    <span class="company">${value.company}</span>
-                    <span class="role">${value.role}</span>
-                </article>
-                <article class="application-info">
-                    <article style="position:relative" class='status ${value.status}'>
-                        <select onChange={changeStatus(event,'${key}')} style='width:100%;cursor:pointer;border:0;border-radius:0;background-color:transparent'>
-                            <option value=''></option>
-                            <option value='Applied'>Applied</option>
-                            <option value='Scheduled'>Scheduled</option>
-                            <option value='Rejected'>Rejected</option>
-                            <option value='Approved'>Approved</option>
-                        </select>
-                        <span style="pointer-events:none;position:absolute;top:50%;left:calc(50% - 10px);transform:translate(-50%,-50%)">${value.status}</span>
-                    </article>
-                    <span class="applied-on">${value.appliedOn}</span>
-                </article>
-            </div>
-            <article class="actions">
-                <button class="secondary-btn" onclick="editJobPanel('${key}')">Edit</button>
-                <button class="secondary-btn" onclick="deleteJob('${key}')">Delete</button>
-                <a href=${value.trackSite} target='_black'>
-                    <button class="secondary-btn" onclick="deleteJob('${key}')">Visit</button>
-                </a>
+    const jobWrapper = document.createElement('div');
+    jobWrapper.classList.add('job-wrapper');
+    jobWrapper.innerHTML = 
+        `<div class="job">
+            <img src="https://icon.horse/icon/stackoverflow.com">
+            <article class="company-info">
+                <span class="company">${value.company}</span>
+                <span class="role">${value.role}</span>
             </article>
-        </div>`
+            <article class="application-info">
+                <article style="position:relative" class='status ${value.status}'>
+                    <select onChange={changeStatus(event,'${key}')} style='width:100%;cursor:pointer;border:0;border-radius:0;background-color:transparent'>
+                        <option value=''></option>
+                        <option value='Applied'>Applied</option>
+                        <option value='Scheduled'>Scheduled</option>
+                        <option value='Rejected'>Rejected</option>
+                        <option value='Approved'>Approved</option>
+                    </select>
+                    <span style="pointer-events:none;position:absolute;top:50%;left:calc(50% - 10px);transform:translate(-50%,-50%)">${value.status}</span>
+                </article>
+                <span class="applied-on">${value.appliedOn}</span>
+            </article>
+        </div>
+        <article class="actions">
+            <button id='edit-${key}' class="secondary-btn">Edit</button>
+            <button id='delete-${key}' class="secondary-btn">Delete</button>
+            <a href=${value.trackSite} target='_black'>
+                <button class="secondary-btn">Visit</button>
+            </a>
+        </article>`
+    
+        console.log(jobWrapper)
+
+        jobWrapper.querySelector('select').addEventListener('change', function(event) {
+            changeStatus(event, key);
+        });
+        
+        jobWrapper.querySelector(`#edit-${key}`).addEventListener('click', function() {
+            editJobPanel(key);
+        });
+
+        jobWrapper.querySelector(`#delete-${key}`).addEventListener('click', function() {
+            deleteJob(key);
+        });
+
+        return jobWrapper
 }
 
 function deleteJob(key){
