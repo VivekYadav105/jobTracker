@@ -261,7 +261,7 @@ function handleSubmit(e){
 
 function renderJobs(){
     JobsWrapper.innerHTML = ''
-    jobs.forEach((value,key)=>JobsWrapper.innerHTML+=createJob(key,value))
+    jobs.forEach((value,key)=>JobsWrapper.appendChild(createJob(key,value)))
     console.log(jobs)
 }
 
