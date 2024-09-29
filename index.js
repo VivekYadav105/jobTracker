@@ -179,52 +179,36 @@ function changeStatus(event,key){
 }
 
 function createJob(key,value){
-    const jobWrapper = document.createElement('div');
-    jobWrapper.classList.add('job-wrapper');
-    jobWrapper.innerHTML = 
-        `<div class="job">
-            <img src="https://icon.horse/icon/stackoverflow.com">
-            <article class="company-info">
-                <span class="company">${value.company}</span>
-                <span class="role">${value.role}</span>
-            </article>
-            <article class="application-info">
-                <article style="position:relative" class='status ${value.status}'>
-                    <select onChange={changeStatus(event,'${key}')} style='width:100%;cursor:pointer;border:0;border-radius:0;background-color:transparent'>
-                        <option value=''></option>
-                        <option value='Applied'>Applied</option>
-                        <option value='Scheduled'>Scheduled</option>
-                        <option value='Rejected'>Rejected</option>
-                        <option value='Approved'>Approved</option>
-                    </select>
-                    <span style="pointer-events:none;position:absolute;top:50%;left:calc(50% - 10px);transform:translate(-50%,-50%)">${value.status}</span>
+    return `
+        <div class="job-wrapper">
+            <div class="job">
+                <img src="https://icon.horse/icon/stackoverflow.com">
+                <article class="company-info">
+                    <span class="company">${value.company}</span>
+                    <span class="role">${value.role}</span>
                 </article>
-                <span class="applied-on">${value.appliedOn}</span>
+                <article class="application-info">
+                    <article style="position:relative" class='status ${value.status}'>
+                        <select onChange={changeStatus(event,'${key}')} style='width:100%;cursor:pointer;border:0;border-radius:0;background-color:transparent'>
+                            <option value=''></option>
+                            <option value='Applied'>Applied</option>
+                            <option value='Scheduled'>Scheduled</option>
+                            <option value='Rejected'>Rejected</option>
+                            <option value='Approved'>Approved</option>
+                        </select>
+                        <span style="pointer-events:none;position:absolute;top:50%;left:calc(50% - 10px);transform:translate(-50%,-50%)">${value.status}</span>
+                    </article>
+                    <span class="applied-on">${value.appliedOn}</span>
+                </article>
+            </div>
+            <article class="actions">
+                <button class="secondary-btn" onclick="editJobPanel('${key}')">Edit</button>
+                <button class="secondary-btn" onclick="deleteJob('${key}')">Delete</button>
+                <a href=${value.trackSite} target='_black'>
+                    <button class="secondary-btn" onclick="deleteJob('${key}')">Visit</button>
+                </a>
             </article>
-        </div>
-        <article class="actions">
-            <button id='edit-${key}' class="secondary-btn">Edit</button>
-            <button id='delete-${key}' class="secondary-btn">Delete</button>
-            <a href=${value.trackSite} target='_black'>
-                <button class="secondary-btn">Visit</button>
-            </a>
-        </article>`
-    
-        
-
-        jobWrapper.querySelector('select.status').addEventListener('change', function(event) {
-            changeStatus(event, key);
-        });
-        
-        jobWrapper.querySelector(`#edit-${key}`).addEventListener('click', function() {
-            editJobPanel(key);
-        });
-
-        jobWrapper.querySelector(`#delete-${key}`).addEventListener('click', function() {
-            deleteJob(key);
-        });
-
-        return jobWrapper
+        </div>`
 }
 
 function deleteJob(key){
@@ -271,10 +255,8 @@ function handleSubmit(e){
 
 function renderJobs(){
     JobsWrapper.innerHTML = ''
-    jobs.forEach((value,key)=>JobsWrapper.appendChild(createJob(key,value)))
+    jobs.forEach((value,key)=>JobsWrapper.innerHTML+=createJob(key,value))
     console.log(jobs)
 }
 
-document.onload = ()=>{
-    renderJobs()
-}
+document.onload = renderJobs()
