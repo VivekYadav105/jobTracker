@@ -1,17 +1,3 @@
-const resume = {
-    fname:"",
-    lname:"",
-    contact:"9398077470",
-    github:"VivekYadav105",
-    linkedin:"",
-    portfolio:"portfolio-vy.vercel.app",
-    address:{},
-    education:{},
-    skills:{},
-    projects:{},
-    workExperience:{},
-}
-
 const jobs = new Map()
 
 const handler = {
