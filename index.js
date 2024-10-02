@@ -77,64 +77,6 @@ function closeJobPanel(){
     window.history.replaceState({}, '', baseUrl);
 }
 
-    // const JobWrapper = document.createElement('div')
-    // JobWrapper.classList.add('job-wrapper')
-    // const JobLink = document.createElement('a')
-    // JobLink.setAttribute('href',value.trackSite)
-    // JobLink.setAttribute('target','_blank')
-    // const job = document.createElement('div')
-    // job.classList.add('job')
-    // const jobLogo = document.createElement('img')
-    // jobLogo.setAttribute('src', "https://icon.horse/icon/stackoverflow.com")
-
-    // const companyInfo = document.createElement('article')
-    // const applicationInfo = document.createElement('article')
-    // const jobActions = document.createElement('article')
-
-    // companyInfo.classList.add('company-info')
-    // applicationInfo.classList.add('application-info')
-    // jobActions.classList.add('actions')
-
-    // const company = document.createElement('span')
-    // company.classList.add('company')
-    // company.innerText = value.company
-    
-    // const role = document.createElement('span')
-    // role.classList.add('role')
-    // role.innerText = value.role
-    
-    // const status = document.createElement('span')
-    // status.classList.add('status')
-    // status.classList.add(value.status)
-    // status.innerText = value.status
-
-    // const appliedOn = document.createElement('span')
-    // appliedOn.classList.add('applied-on')
-    // appliedOn.innerText = value.appliedOn
-
-    // companyInfo.appendChild(company)
-    // companyInfo.appendChild(role)
-
-    // applicationInfo.append(status)
-    // applicationInfo.append(appliedOn)
-
-    // jobActions.innerHTML = `
-    //     <button class="secondary-btn" onClick="editJob(e)">Edit</button>
-    //     <button class="secondary-btn" onClick="deleteJob(e)">Delete</button>
-    // `
-
-    // job.appendChild(jobLogo)
-    // job.appendChild(companyInfo)
-    // job.appendChild(applicationInfo)
-
-    // JobLink.appendChild(job)
-
-    // JobWrapper.appendChild(JobLink)
-    // JobWrapper.appendChild(jobActions)
-
-    
-    // return JobWrapper
-
 function changeStatus(event,key){
     const value = event.target.selectedOptions[0].value
     const job = jobs.get(key)
