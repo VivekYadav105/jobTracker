@@ -265,6 +265,7 @@ option{
     padding: 10px;
     border: 2px solid mediumpurple;
     width: 300px;
+    z-index: 20;
     position: absolute;
     transform: translateY(0px);
 }

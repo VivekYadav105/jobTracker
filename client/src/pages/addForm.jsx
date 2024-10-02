@@ -29,14 +29,13 @@ import PropTypes from 'prop-types'
                 appliedOn:parseDate(appliedOn.value),
                 trackLink:trackLink.value
             }
-            console.log(job);            
-            let key;
             if(searchParams.get('popUp')=='add'){
-                key = Date.now()
+                props.updateJob(JSON.stringify(Date.now()),job)
             }else if(searchParams.get('popUp')=='edit'){
-                key = searchParams.get('jobId')
+                console.log('here');
+                const key = searchParams.get('jobId')
+                props.updateJob(key,job)
             }
-            props.updateJobs(key,job)
             props.closeJobPanel()
         }catch(err){
             console.log(err);
@@ -56,34 +55,33 @@ import PropTypes from 'prop-types'
             <form className="" onSubmit={handleSubmit}>
                 <div className="input-wrapper">
                     <label htmlFor="">Role</label>
-                    <input name='role' placeholder='Enter role' type="text"/>
+                    <input name='role' defaultValue={props.currentJob?props.currentJob.role:undefined} placeholder='Enter role' type="text"/>
                 </div>
                 <div>
                     <article className="input-wrapper">
                         <label htmlFor="">Company</label>
-                        <input placeholder='Enter company' name='company' type="text"/>
+                        <input placeholder='Enter company' defaultValue={props.currentJob?props.currentJob.company:undefined} name='company' type="text"/>
                     </article>
                     <article className="input-wrapper">
                         <label htmlFor="">Applied On</label>
-                        <input placeholder='Applied On' name='appliedOn' type="date"/>
+                        <input placeholder='Applied On' defaultValue={props.currentJob?props.currentJob.appliedOn:undefined} name='appliedOn' type="date"/>
                     </article>
                 </div>
                 <div className="input-wrapper">
                     <label htmlFor="">Link</label>
-                    <input name="trackLink" placeholder='Enter the website link' type="text"/>
+                    <input name="trackLink" defaultValue={props.currentJob?props.currentJob.trackLink:undefined} placeholder='Enter the website link' type="text"/>
                 </div>
-                <div className="input-wrapper">
-                <label htmlFor="">Status</label>
-                <select name='status' style={{width:'100%',cursor:'pointer',border:"0",borderRadius:'0',backgroundColor:'transparent'}}>
-                    <option value=''></option>
-                    <option value='Applied'>Applied</option>
-                    <option value='Scheduled'>Scheduled</option>
-                    <option value='Rejected'>Rejected</option>
-                    <option value='Approved'>Approved</option>
-                </select>
+                <div className="input-wrapper" style={{flexDirection:"row",alignItems:"center",justifyContent:"center",margin:"10px 0 "}}>
+                    <label htmlFor="">Status</label>
+                    <select name='status' style={{cursor:'pointer',border:"0",borderRadius:'10px',margin:"0 10px",backgroundColor:'white'}}>
+                        <option defaultChecked={props.currentJob?props.currentJob.status=='Applied':undefined} value='Applied' selected>Applied</option>
+                        <option defaultChecked={props.currentJob?props.currentJob.status=='Scheduled':undefined} value='Scheduled'>Scheduled</option>
+                        <option defaultChecked={props.currentJob?props.currentJob.status=='Rejected':undefined} value='Rejected'>Rejected</option>
+                        <option defaultChecked={props.currentJob?props.currentJob.status=='Approved':undefined} value='Approved'>Approved</option>
+                    </select>
                 </div>
                 <div className='input-wrapper'>
-                    <button type='secondary-btn'>submit</button>
+                    <button type='submit' className='secondary-btn' style={{margin:"auto"}}>submit</button>
                 </div>
             </form>
         </div>
@@ -92,8 +90,9 @@ import PropTypes from 'prop-types'
 
 JobForm.propTypes={
     closeJobPanel:PropTypes.func,
-    updateJobs:PropTypes.func,
-    open:PropTypes.bool
+    updateJob:PropTypes.func,
+    open:PropTypes.bool,
+    currentJob:PropTypes.object
 }
 
 export default JobForm

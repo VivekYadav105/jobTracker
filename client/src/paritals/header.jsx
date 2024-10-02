@@ -1,9 +1,22 @@
-import PropTypes from "prop-types"
 import { useState } from "react"
+import { useSearchParams } from "react-router-dom"
 
-const Header = (props)=>{
+const Header = ()=>{
 
     const [showSearch,setShowSearch] = useState(false)
+    const [searchParams,setSearchParams] = useSearchParams()
+
+    function openJobPopUp(){
+        setSearchParams(prev => {
+            const newParams = new URLSearchParams(prev);
+            newParams.append('popUp', 'add');
+
+            // Log new search parameters after appending
+            console.log('Updated Search Params:', newParams.toString());
+            return newParams;
+        });
+
+    }
 
     return(
         <div className="header-wrapper">
@@ -18,17 +31,16 @@ const Header = (props)=>{
                     <button className="main-btn circle">
                         <i className="fa-regular fa-file"></i>
                     </button>
-                    <button onClick={props.openJobPanel} id='add-job' className="main-btn circle">
-                        <i className="fa-regular fa-plus"></i>
-                    </button>
+                    {!searchParams.get('popUp')&&(
+                        <button onClick={openJobPopUp} id='add-job' className="main-btn circle">
+                            <i className="fa-regular fa-plus"></i>
+                        </button>
+                    )}
                 </article>
             </article>
         </div>
     )
 }
 
-Header.propTypes = {
-    openJobPanel:PropTypes.func,
-}
 
 export default Header
