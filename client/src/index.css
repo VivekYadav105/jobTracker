@@ -21,6 +21,7 @@ body{
     height: 400px;
     border: 2px solid black;
     display: flex;
+    position: relative;
     flex-direction: column;
 }
 
@@ -267,7 +268,9 @@ option{
     width: 300px;
     z-index: 20;
     position: absolute;
-    transform: translateY(0px);
+    top: 0;
+    left: 0;
+    transform: translateY(-2px) translateX(-2px);
 }
 #addJob-wrapper.close{
     display: none;
