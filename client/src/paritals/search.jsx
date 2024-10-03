@@ -1,7 +1,6 @@
 import PropTypes from "prop-types"
 
 function Search(props){
-    
     return(
         <div className={`search-wrapper ${props.showSearch?"":"close"}`}>
                 <input onChange={(e)=>{props.updateSearch(e.target.value)}} className="search-bar" id="job-search" placeholder="search your job" type="text"/>

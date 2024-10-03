@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react"
-import JobElement from '../jobElement'
+import JobElement from '../../components/jobElement'
 import AddForm from "./addForm"
 import React from "react"
-import PropTypes from "prop-types"
 import { useSearchParams } from "react-router-dom"
 
 

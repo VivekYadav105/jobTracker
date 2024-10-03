@@ -1,9 +1,8 @@
-import { useState } from "react"
+import PropTypes from "prop-types";
 import { useSearchParams } from "react-router-dom"
 
-const Header = ()=>{
+const Header = ({showSearch,openSearch})=>{
 
-    const [showSearch,setShowSearch] = useState(false)
     const [searchParams,setSearchParams] = useSearchParams()
 
     function openJobPopUp(){
@@ -24,7 +23,7 @@ const Header = ()=>{
                 <h3>JOB BOARD</h3>
                 <article className="header-buttons">
                     {!showSearch&&(
-                        <button className="main-btn circle" id="search" onClick={()=>setShowSearch(true)}>
+                        <button className="main-btn circle" id="search" onClick={openSearch}>
                             <i className="fa-solid fa-magnifying-glass"></i>
                         </button>
                     )}
@@ -42,5 +41,9 @@ const Header = ()=>{
     )
 }
 
+Header.propTypes = {
+    showSearch:PropTypes.bool,
+    openSearch:PropTypes.func
+}
 
 export default Header
