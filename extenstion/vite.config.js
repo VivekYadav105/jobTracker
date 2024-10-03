@@ -11,15 +11,15 @@ export default defineConfig({
   },
   plugins: [
     react(),
-    // crx({ manifest }),
     VitePWA({
       registerType: 'autoUpdate',
       manifest: {
-        name: 'My PWA App',
-        short_name: 'PWA',
+        name: 'Job board',
+        short_name: 'JB',
         start_url: '/',
         display: 'standalone',
-        background_color: '#ffffff',
+        background_color: '#4287f5',
+        theme_color: '#C2FCC2',
         icons: [
           {
             src: '/icon.png',
