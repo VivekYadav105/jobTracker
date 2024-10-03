@@ -1,8 +1,8 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa';
-import { crx } from "@crxjs/vite-plugin";
 import manifest from "./manifest.json";
+// import { crx } from "@crxjs/vite-plugin";
 
 
 export default defineConfig({
@@ -13,20 +13,7 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      manifest: {
-        name: 'Job board',
-        short_name: 'JB',
-        start_url: '/',
-        display: 'standalone',
-        background_color: '#4287f5',
-        theme_color: '#C2FCC2',
-        icons: [
-          {
-            src: '/icon.png',
-            type: 'image/png',
-          }
-        ],
-      },
+      manifest:manifest,
       workbox: {
         runtimeCaching: [
           {

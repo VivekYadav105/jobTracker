@@ -2,7 +2,7 @@
     "manifest_version": 3,
     "name": "JobBoard",
     "short_name": "JobBoard", 
-    "start_url": ".",
+    "start_url": "/",
     "theme_color": "#C2FCC2",
     "background_color": "#4287f5",
     "display": "standalone",
