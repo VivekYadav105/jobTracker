@@ -11,7 +11,7 @@ export default defineConfig({
   },
   plugins: [
     react(),
-    crx({ manifest }),
+    // crx({ manifest }),
     VitePWA({
       registerType: 'autoUpdate',
       manifest: {
@@ -22,15 +22,9 @@ export default defineConfig({
         background_color: '#ffffff',
         icons: [
           {
-            src: '/icon-192x192.png',
-            sizes: '192x192',
+            src: '/icon.png',
             type: 'image/png',
-          },
-          {
-            src: '/icon-512x512.png',
-            sizes: '512x512',
-            type: 'image/png',
-          },
+          }
         ],
       },
       workbox: {

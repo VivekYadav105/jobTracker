@@ -48,7 +48,7 @@ import PropTypes from 'prop-types'
         <div className={props.open?"":'close'} id="addJob-wrapper">
             <div className='header' style={{borderRadius:'10px',marginBottom:'10px'}}>
                 <h2 style={{textAlign:"center",color:"teal"}}> Add Your Job </h2>
-                <button onClick={props.closeJobPanel} id="close-addJob" style={{backgroundColor: "white"}}  className="main-btn circle">
+                <button aria-label='close-jobpanel' onClick={props.closeJobPanel} id="close-addJob" style={{backgroundColor: "white"}}  className="main-btn circle">
                     <i className="fa-solid fa-xmark"></i>
                 </button>
             </div>
@@ -81,7 +81,7 @@ import PropTypes from 'prop-types'
                     </select>
                 </div>
                 <div className='input-wrapper'>
-                    <button type='submit' className='secondary-btn' style={{margin:"auto"}}>submit</button>
+                    <button aria-label='submit-job-form' type='submit' className='secondary-btn' style={{margin:"auto"}}>submit</button>
                 </div>
             </form>
         </div>
