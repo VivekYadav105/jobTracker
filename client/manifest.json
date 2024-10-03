@@ -1,0 +1,20 @@
+{
+    "manifest_version": 3,
+    "name": "JobBoard",
+    "version":"1.0",
+    "icons": {
+        "16": "logo.png",
+        "48": "logo.png",
+        "128": "logo.png"
+    },
+    "description": "This extension allows user to keep track of the application user made in different website",
+    "action": {
+      "default_icon": "logo.png",
+      "default_popup": "index.html",
+      "default_title": "JobBoard"
+    },
+
+    "permissions": [
+      "activeTab"
+    ]
+}
