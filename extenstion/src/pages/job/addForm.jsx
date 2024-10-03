@@ -54,26 +54,26 @@ import PropTypes from 'prop-types'
             </div>
             <form className="" onSubmit={handleSubmit}>
                 <div className="input-wrapper">
-                    <label htmlFor="">Role</label>
-                    <input name='role' defaultValue={props.currentJob?props.currentJob.role:undefined} placeholder='Enter role' type="text"/>
+                    <label htmlFor="role">Role</label>
+                    <input id='role' name='role' defaultValue={props.currentJob?props.currentJob.role:undefined} placeholder='Enter role' type="text"/>
                 </div>
                 <div>
                     <article className="input-wrapper">
-                        <label htmlFor="">Company</label>
-                        <input placeholder='Enter company' defaultValue={props.currentJob?props.currentJob.company:undefined} name='company' type="text"/>
+                        <label htmlFor="company">Company</label>
+                        <input id='company' placeholder='Enter company' defaultValue={props.currentJob?props.currentJob.company:undefined} name='company' type="text"/>
                     </article>
                     <article className="input-wrapper">
-                        <label htmlFor="">Applied On</label>
-                        <input placeholder='Applied On' defaultValue={props.currentJob?props.currentJob.appliedOn:undefined} name='appliedOn' type="date"/>
+                        <label htmlFor="appliedOn">Applied On</label>
+                        <input id='appliedOn' placeholder='Applied On' defaultValue={props.currentJob?props.currentJob.appliedOn:undefined} name='appliedOn' type="date"/>
                     </article>
                 </div>
                 <div className="input-wrapper">
-                    <label htmlFor="">Link</label>
-                    <input name="trackLink" defaultValue={props.currentJob?props.currentJob.trackLink:undefined} placeholder='Enter the website link' type="text"/>
+                    <label htmlFor="trackLink">Link</label>
+                    <input id='trackLink' name="trackLink" defaultValue={props.currentJob?props.currentJob.trackLink:undefined} placeholder='Enter the website link' type="text"/>
                 </div>
                 <div className="input-wrapper" style={{flexDirection:"row",alignItems:"center",justifyContent:"center",margin:"10px 0 "}}>
-                    <label htmlFor="">Status</label>
-                    <select name='status' style={{cursor:'pointer',border:"0",borderRadius:'10px',margin:"0 10px",backgroundColor:'white'}}>
+                    <label htmlFor="status">Status</label>
+                    <select id='status' name='status' style={{cursor:'pointer',border:"0",borderRadius:'10px',margin:"0 10px",backgroundColor:'white'}}>
                         <option defaultChecked={props.currentJob?props.currentJob.status=='Applied':undefined} value='Applied' selected>Applied</option>
                         <option defaultChecked={props.currentJob?props.currentJob.status=='Scheduled':undefined} value='Scheduled'>Scheduled</option>
                         <option defaultChecked={props.currentJob?props.currentJob.status=='Rejected':undefined} value='Rejected'>Rejected</option>
