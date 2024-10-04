@@ -5,24 +5,6 @@
     "start_url": "/",
     "theme_color": "#C2FCC2",
     "background_color": "#4287f5",
-    "display": "standalone",
-    "icons":[
-      {
-        "src":"/logo.png",
-        "sizes":"16x16",
-        "type":"image/png"
-      },
-      {
-        "src":"/logo192.png",
-        "sizes": "192x192",
-        "type": "image/png"
-      },
-      {
-        "src":"/logo512.png",
-        "sizes": "512x512",
-        "type": "image/png"
-      }
-    ],
     "version":"1.0",
     "description": "This extension allows user to keep track of the application user made in different website",
     "action": {

@@ -18,7 +18,7 @@ import PropTypes from 'prop-types'
         return `${day}-${month}-${year}`
     }
 
-    function handleSubmit(e){
+    async function handleSubmit(e){
         try{
             e.preventDefault()
             const [role,company,appliedOn,trackLink,status] = e.target
@@ -30,11 +30,11 @@ import PropTypes from 'prop-types'
                 trackLink:trackLink.value
             }
             if(searchParams.get('popUp')=='add'){
-                props.updateJob(JSON.stringify(Date.now()),job)
+                await props.addJob(job)
             }else if(searchParams.get('popUp')=='edit'){
                 console.log('here');
                 const key = searchParams.get('jobId')
-                props.updateJob(key,job)
+                await props.updateJob(key,job)
             }
             props.closeJobPanel()
         }catch(err){
@@ -47,7 +47,7 @@ import PropTypes from 'prop-types'
     return(
         <div className={props.open?"":'close'} id="addJob-wrapper">
             <div className='header' style={{borderRadius:'10px',marginBottom:'10px'}}>
-                <h2 style={{textAlign:"center",color:"teal"}}> Add Your Job </h2>
+                <h2 style={{textAlign:"center",color:"teal"}}> {searchParams.get('popUp')=='edit'?`Edit Job ${searchParams.get('jobId')}`:'Add Your Job'}</h2>
                 <button aria-label='close-jobpanel' onClick={props.closeJobPanel} id="close-addJob" style={{backgroundColor: "white"}}  className="main-btn circle">
                     <i className="fa-solid fa-xmark"></i>
                 </button>
@@ -92,7 +92,8 @@ JobForm.propTypes={
     closeJobPanel:PropTypes.func,
     updateJob:PropTypes.func,
     open:PropTypes.bool,
-    currentJob:PropTypes.object
+    currentJob:PropTypes.object,
+    addJob:PropTypes.func
 }
 
 export default JobForm

@@ -8,7 +8,6 @@ function Home() {
   const [showSearch,setShowSearch] = useState(false)
   const [searchValue,setSearchValue] = useState('')
 
-
   function updateSearch(value){
     setSearchValue(value);
   }
