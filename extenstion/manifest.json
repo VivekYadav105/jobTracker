@@ -2,9 +2,6 @@
     "manifest_version": 3,
     "name": "JobBoard",
     "short_name": "JobBoard", 
-    "start_url": "/",
-    "theme_color": "#C2FCC2",
-    "background_color": "#4287f5",
     "version":"1.0",
     "description": "This extension allows user to keep track of the application user made in different website",
     "action": {
@@ -12,8 +9,15 @@
       "default_popup": "index.html",
       "default_title": "JobBoard"
     },
-
+    "icons": {
+      "16": "logo.png",
+      "48": "logo.png",
+      "128": "logo.png"
+    },
     "permissions": [
-      "activeTab"
+      "activeTab",
+      "storage",
+      "http://*/*", "https://*/*",
+      "chrome-extension://*/*"
     ]
 }

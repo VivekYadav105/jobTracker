@@ -267,7 +267,9 @@ option{
     color: mediumpurple;
     padding: 10px;
     border: 2px solid mediumpurple;
-    width: 300px;
+    /* width: 300px; */
+    width: 100%;
+    min-width: 300px;
     z-index: 20;
     position: absolute;
     top: 0;

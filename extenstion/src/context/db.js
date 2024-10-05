@@ -68,6 +68,7 @@ const addJob = (job)=>{
             store.add(job);
             const res = store.getAll();
             res.onsuccess = ()=>{
+                // fs.writeFile("data.json", res.result,(err)=>console.log(err))
                 resolve(res.result)
             }
         };
@@ -98,10 +99,10 @@ const getJobs = () => {
         };
       };
     });
-  };
+};
 
-export const deleteJob = (key) => {
-return new Promise((resolve,reject) => {
+const deleteJob = (key) => {
+    return new Promise((resolve,reject) => {
     // again open the connection
     const request = indexedDB.open('JobBoard');
 
@@ -116,6 +117,7 @@ return new Promise((resolve,reject) => {
     res.onsuccess = () => {
         const jobs = store.getAll()
         jobs.onsuccess = ()=>{
+            // fs.writeFile("data.json", res.result,(err)=>console.log(err))
             return resolve(jobs.result)
         }
     };
@@ -126,5 +128,38 @@ return new Promise((resolve,reject) => {
 });
 };
 
+const editJob = (key,job)=>{
+    return new Promise((resolve,reject)=>{
+        const request = indexedDB.open('JobBoard')
+        request.onsuccess = ()=>{
+            const db = request.result
+            const transaction = db.transaction('jobs','readwrite')
+            const store = transaction.objectStore('jobs')
+            const res = store.put(job,key)
+            res.onerror = ()=>{
+                const error = request.error?.message
+                if (error) {
+                    reject(error);
+                } else {
+                    reject('Unknown error');
+                }
+            }
+            res.onsuccess = ()=>{
+                const jobs = store.getAll()
+                // fs.writeFile("data.json", res.result,(err)=>console.log(err))
+                return resolve(jobs.result)
+            }
+        } 
+        request.onerror = () => {
+            const error = request.error?.message
+            if (error) {
+                reject(error);
+            } else {
+                reject('Unknown error');
+            }
+        };
+    })
+}
+
 export default initDB
-export {addJob,getJobs}
+export {addJob,getJobs,deleteJob,editJob}

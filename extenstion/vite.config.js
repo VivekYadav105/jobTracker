@@ -30,6 +30,17 @@ export default defineConfig({
     //     ],
     //   },
     // }),
-    crx({manifest})
+    crx({
+      manifest:manifest,
+    })
   ],
+  build:{
+    rollupOptions:{
+        input: {
+            // Define your main entry point and the background script
+            main: 'src/main.jsx',  // or whatever your entry point is
+            background: 'public/background.js' // Ensure this is set correctly
+        }
+    }
+  }
 });

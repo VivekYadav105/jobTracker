@@ -3,12 +3,12 @@ import JobElement from '../../components/jobElement'
 import AddForm from "./addForm"
 import React from "react"
 import { useSearchParams } from "react-router-dom"
-import {getJobs,deleteJob, addJob} from '../../context/db'
+import {getJobs,deleteJob, addJob, editJob} from '../../context/db'
 
 
 const JobsPage = (props)=>{
 
-    const [jobs,setJobs] = useState(new Map())
+    const [jobs,setJobs] = useState([])
     const [currentJob,setCurrentJob] = useState({})
     const [searchParams,setSearchParams] = useSearchParams()
 
@@ -18,7 +18,8 @@ const JobsPage = (props)=>{
     }
 
     async function handleUpdateJob(jobId,job) {
-      
+      const jobs = await editJob(jobId,job)
+      setJobs(jobs)
     }
 
     async function handleDeleteJob(jobId){
@@ -26,7 +27,7 @@ const JobsPage = (props)=>{
       setJobs(jobs) 
     }
 
-    function editJob(jobId){
+    function editJobPanel(jobId){
       const currJob = jobs.filter(ele=>ele.id==jobId)[0]
       console.log(currJob);
       
@@ -62,7 +63,7 @@ const JobsPage = (props)=>{
     return(
         <>
             <AddForm open={Boolean(searchParams.get('popUp'))} currentJob={currentJob} updateJob={handleUpdateJob} addJob={handleAddJob} closeJobPanel={closeJobPanel}/>
-            {jobs&&Array.from(jobs.entries()).map(([jobId,job])=><JobElement editJob={()=>editJob(job.id)}  deleteJob={()=>handleDeleteJob(job.id)} key={jobId} {...job} jobId={jobId}/>)}
+            {jobs&&jobs.map((job)=><JobElement editJob={()=>editJobPanel(job.id)}  deleteJob={()=>handleDeleteJob(job.id)} key={job.id} {...job} jobId={job.id}/>)}
         </>
     )
 }
