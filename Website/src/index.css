@@ -1,0 +1,21 @@
+@import url('https://fonts.googleapis.com/css2?family=SUSE:wght@100..800&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root{
+  --pale-green:rgba(152, 251, 152, 0.583);
+  --white:floralwhite;
+}
+
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    text-decoration: none;
+    font-family: "SUSE", system-ui;
+}
+
+body{
+  background-color: var(--pale-green);
+}
