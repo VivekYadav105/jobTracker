@@ -1,11 +1,21 @@
-import React, { useRef, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { BiSearch,BiFilter } from "react-icons/bi"
 import JobCard from "../components/jobCard";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../store";
+import {setJobs} from '../store/jobSlice'
 
 const Home:React.FC = ()=>{
 
     const [filterExpanded,setFilterExpanded] = useState(false)
     const filterRef = useRef<HTMLDivElement|null>(null);
+    const [searchValue,setSearchValue] = useState('')
+    const jobs = useSelector((state:RootState)=>state.job)
+    const dispatch = useDispatch()
+
+    useEffect(()=>{
+        dispatch(setJobs())
+    },[])
 
     return(
         <>
@@ -15,7 +25,7 @@ const Home:React.FC = ()=>{
                         <span className="p-2 inline-block">
                             <BiSearch size={20}/>
                         </span>
-                        <input type="text" id="searchBar" placeholder="Search by Job title or Company or Portal" className="p-2 flex-1 outline-none rounded-xl"/>
+                        <input onChange={(e)=>{setSearchValue(e.target.value)}} type="text" id="searchBar" placeholder="Search by Job title or Company or Portal" className="p-2 flex-1 outline-none rounded-xl"/>
                     </article>
                     <div className="relative" ref={filterRef}>
                         <button onClick={()=>{setFilterExpanded(!filterExpanded)}} className="p-2 bg-white shadow-lg hover:bg-green-500 border-2 border-transparent hover:border-green-800 hover:text-green-800 duration-300 rounded-md">
@@ -55,15 +65,16 @@ const Home:React.FC = ()=>{
                         </div>
                     </div>
                 </div>
-                <div className="w-full p-3 mt-3">
-                    <h1 className="pb-2 ps-4">Job Results:</h1>
-                    <div className="grid rounded-xl max-w-full p-3 gap-2 place-content-center m-auto content-center grid-flow-dense" style={{gridTemplateColumns:"repeat(auto-fill,275px)"}}>
-                        <JobCard/>
-                        <JobCard/>
-                        <JobCard/>
-                        <JobCard/> 
+                {searchValue&&(
+                    <div className="w-full p-3 mt-3">
+                        <h1 className="pb-2 ps-4">Job Results:</h1>
+                        <div className="grid rounded-xl max-w-full p-3 gap-2 place-content-center m-auto content-center grid-flow-dense" style={{gridTemplateColumns:"repeat(auto-fill,275px)"}}>
+                            {jobs.map(ele=>(
+                                <JobCard {...ele}/>
+                            ))}
+                        </div>
                     </div>
-                </div>
+                )}
                 
             </div>
         </>
