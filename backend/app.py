@@ -38,7 +38,7 @@ def hello_world():
 @app.before_request
 def set_db():
     g.db = mongo.db 
-    g.jwt_secret = app.config.get('JWT_SECRET')
+    g.jwt_secret = str(app.config.get('JWT_SECRET'))
     g.salt_length = int(app.config.get('SALT_LENGTH'))
 
 app.register_blueprint(jobRouter)

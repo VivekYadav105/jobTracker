@@ -13,6 +13,13 @@ def send_verification_email(token,email):
     msg.html = f"<b>Hey User</b>, Please  <a href='http://localhost:3000/verify/{token}'>Click here</a> <br/> or <br/> use this link for verification <a href='http://localhost:3000/verify/{token}'>http://localhost:3000/verify/{token}</a>"
     mail.send(msg)
 
+def create_token(payload,**options):
+    token = jwt.encode(payload,key=g.jwt_secret,algorithm='HS256',**options)
+    return token
+
+def decode_token(token):
+    return jwt.decode(token,key=g.jwt_secret,algorithms=['HS256'])
+
 @authRouter.route('/login',methods=['POST'])
 def login():
     data = request.get_json()
@@ -23,7 +30,7 @@ def login():
     if not check_password_hash(user.get('password'),data['password']):
         abort(400,'Password Incorrect')
     if not user.get('verified'):
-        token = jwt.encode({'_id':str(user.get('_id'))})
+        token = jwt.encode({'_id':str(user.get('_id'))},key=g.jwt_secret)
         send_verification_email(token,user.get('email'))
         return jsonify({"message":"please verify your account"})
     return jsonify({"message":"User logged in successfully"})
@@ -40,16 +47,17 @@ def signup():
             else:
                 print("from print:",g.jwt_secret)
                 payload = {
-                    'exp': datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(minutes=30),
+                    'exp': datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(minutes=10),
                     '_id':str(user.get('_id'))    
                 }
-                token = jwt.encode(payload,key=g.jwt_secret)
+                token = create_token(payload)
                 send_verification_email(token,data['email'])
+                user_collection.update_one({"_id":ObjectId(user['_id'])},{"$set":{"token":token}})
                 return jsonify(message='Please click on the link sent to your email',token=token)
         else:
             hash_password = generate_password_hash(data['password'],salt_length=g.salt_length)
             result = user_collection.insert_one({'email':data['email'],"password":hash_password,'verified':False,'gender':'M',"token":""})
-            token = jwt.encode({'_id':str(result.inserted_id)},key=g.jwt_secret)
+            token = create_token({'_id':str(result.inserted_id)})
             user_collection.update_one({"_id":ObjectId(result.inserted_id)},{"$set":{"token":token}})
 
         return jsonify(message='A verification mail is sent to your email')
@@ -61,12 +69,13 @@ def signup():
 def verify_user(token):
     try:
         print("from print:",g.jwt_secret)
-        jwt_payload = jwt.decode(token,key=g.jwt_secret)
+        print(token)
+        jwt_payload = jwt.decode(token,key=g.jwt_secret,algorithms=['HS256'])
         print(jwt_payload)
         user_collection = g.db.users
         filter = None
         try:
-            filter = {"_id":ObjectId(jwt_payload._id)}
+            filter = {"_id":ObjectId(jwt_payload['_id'])}
         except Exception as e:
             abort(400,'Invalid token')
 
@@ -74,7 +83,7 @@ def verify_user(token):
 
         if not user:
             abort(404,"user doesn't exist")
-        
+        print(user)
         if user.get('token') != token:
             abort(400,"Invalid token")
 
@@ -82,6 +91,7 @@ def verify_user(token):
             "token":"",
             "verified":True
         }})
+        return jsonify(message='User verified successfully')
 
     except jwt.ExpiredSignatureError as e:
         abort(401, "Token has expired.")
