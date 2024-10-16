@@ -15,4 +15,13 @@ class JobSchema(BaseModel):
     status: str
     link:str
     _id:Union[str,ObjectId]
+
+    # @field_validator('_id')
+    # def validate_objectid(cls, v):
+    #     if isinstance(v, ObjectId):
+    #         return str(v)  # Convert ObjectId to string
+    #     return v  
+
+    class Config:
+        arbitrary_types_allowed = True    
                 

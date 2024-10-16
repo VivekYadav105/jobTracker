@@ -4,6 +4,7 @@ from werkzeug.security import generate_password_hash,check_password_hash
 import os,datetime
 import jsonwebtoken as jwt
 from utils import login_manager,mail
+from middleware.auth import jwt_required
 from bson.objectid import ObjectId
 
 authRouter = Blueprint('authRouter',__name__,url_prefix='/auth')
@@ -11,6 +12,11 @@ authRouter = Blueprint('authRouter',__name__,url_prefix='/auth')
 def send_verification_email(token,email):
     msg = Message(subject='User Verification', sender="noredply-jobBoard.gmail.com", recipients=[email])
     msg.html = f"<b>Hey User</b>, Please  <a href='http://localhost:3000/verify/{token}'>Click here</a> <br/> or <br/> use this link for verification <a href='http://localhost:3000/verify/{token}'>http://localhost:3000/verify/{token}</a>"
+    mail.send(msg)
+
+def send_forgot_email(token,email):
+    msg = Message(subject='Password Reset', sender="noredply-jobBoard.gmail.com", recipients=[email])
+    msg.html = f"<b>Hey User</b>, Please  <a href='http://localhost:3000/reset/{token}'>Click here</a> <br/> or <br/> use this link for verification <a href='http://localhost:3000/reset/{token}'>http://localhost:3000/reset/{token}</a>"
     mail.send(msg)
 
 def create_token(payload,**options):
@@ -65,12 +71,13 @@ def signup():
         print(e.__str__())
         abort(e)
 
-@authRouter.get('/verify/<token>')
-def verify_user(token):
+@authRouter.get('/verify')
+@jwt_required(request)
+def verify_user():
     try:
         print("from print:",g.jwt_secret)
-        print(token)
-        jwt_payload = jwt.decode(token,key=g.jwt_secret,algorithms=['HS256'])
+        print(request.token)
+        jwt_payload = jwt.decode(request.token,key=g.jwt_secret,algorithms=['HS256'])
         print(jwt_payload)
         user_collection = g.db.users
         filter = None
@@ -84,7 +91,7 @@ def verify_user(token):
         if not user:
             abort(404,"user doesn't exist")
         print(user)
-        if user.get('token') != token:
+        if user.get('token') != request.token:
             abort(400,"Invalid token")
 
         user_collection.update_one(filter,{"$set":{
@@ -108,22 +115,22 @@ def forgot_password():
     data = request.get_json()
     user_collection = g.db.users
     user = user_collection.find_one({"email":data['email']})
-    token = jwt.encode({'_id':user.get('_id')})
-    user_collection.update_one({"email":data['email']},{'$set':{"token":token}})
+    token = create_token({'_id':str(user.get('_id'))})
     if not user:
         abort(404,"user not found")
-    # send mail here
+    user_collection.update_one({"email":data['email']},{'$set':{"token":token}})
+    send_forgot_email(token,user['email'])
     return jsonify({"message":"Password reset link is sent to your mail"})
 
+@jwt_required(request)
 def reset_password():
     try:
         data = request.get_json()
         user_collection = g.db.users
-        jwt_payload = jwt.decode(data['token'],key=g.jwt_secret)
+        jwt_payload = decode_token(request.token)
         filter = None
-
         try:
-            filter = {"_id":ObjectId(jwt_payload._id)}
+            filter = {"_id":ObjectId(jwt_payload['_id'])}
         except Exception as e:
             print(e)
             abort(400,"Invalid UserId")
@@ -132,18 +139,21 @@ def reset_password():
         if not user:
             abort(404,'User not Found')
         
-        if user.get('token') != data['token']:
+        print(user.get('token'))
+        print(request.token)
+
+        if user.get('token') != request.token:
             abort(400,"Invalid token")
 
+        print(data)
         hash_password = generate_password_hash(data['password'],salt_length=g.salt_length)
         user_collection.update_one(filter,{'$set':{"password":hash_password,"token":''}})
         return jsonify({"message":"password reset successfully"})
-    
-    except jwt.InvalidTokenError as e:
+    except Exception as e:
         print(e)
         abort(400,'Invalid token')
 
-authRouter.add_url_rule('/reset','reset_password',reset_password)
+authRouter.add_url_rule('/reset','reset_password',reset_password,methods=['POST'])
 
 @authRouter.route('/verifyToken/<token>')
 def verify_token(token):

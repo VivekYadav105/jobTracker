@@ -3,7 +3,6 @@ from collections.abc import Iterable
 
 def json_parse(obj):
     isIterable = False
-    
     try:
         obj = list(obj)
         isIterable = True        
