@@ -1,13 +1,23 @@
 from flask import Blueprint,jsonify,Response,request,g,abort
 from flask_mail import Message
+from flask_login import logout_user,login_user
 from werkzeug.security import generate_password_hash,check_password_hash
 import os,datetime
 import jsonwebtoken as jwt
+from auth.schema import UserSchema
 from utils import login_manager,mail
 from middleware.auth import jwt_required
 from bson.objectid import ObjectId
 
 authRouter = Blueprint('authRouter',__name__,url_prefix='/auth')
+
+@login_manager.user_loader
+def load_user(id):
+    user = g.db.users.find_one({"_id": id})
+    if user:
+        return UserSchema(**user)
+    return None
+
 
 def send_verification_email(token,email):
     msg = Message(subject='User Verification', sender="noredply-jobBoard.gmail.com", recipients=[email])
@@ -39,16 +49,17 @@ def login():
         token = jwt.encode({'_id':str(user.get('_id'))},key=g.jwt_secret)
         send_verification_email(token,user.get('email'))
         return jsonify({"message":"please verify your account"})
+    user['_id'] = str(user['_id'])
+    login_user(UserSchema(**user))
     return jsonify({"message":"User logged in successfully"})
 
 @authRouter.route('/signup',methods=['POST'])
 def signup():
-    try:
         data = request.get_json()
         user_collection = g.db.users
         user = user_collection.find_one({"email":data['email']})
         if(user):
-            if user.get('verified', False):
+            if user['verified']:
                 abort(400,"User already Exists")
             else:
                 print("from print:",g.jwt_secret)
@@ -67,15 +78,11 @@ def signup():
             user_collection.update_one({"_id":ObjectId(result.inserted_id)},{"$set":{"token":token}})
 
         return jsonify(message='A verification mail is sent to your email')
-    except Exception as e:
-        print(e.__str__())
-        abort(e)
+   
 
 @authRouter.get('/verify')
 @jwt_required(request)
 def verify_user():
-    try:
-        print("from print:",g.jwt_secret)
         print(request.token)
         jwt_payload = jwt.decode(request.token,key=g.jwt_secret,algorithms=['HS256'])
         print(jwt_payload)
@@ -100,15 +107,7 @@ def verify_user():
         }})
         return jsonify(message='User verified successfully')
 
-    except jwt.ExpiredSignatureError as e:
-        abort(401, "Token has expired.")
-        print(e)
-    except jwt.InvalidTokenError:
-        abort(401, "Invalid token.")
-        print(e)
-    except jwt.InvalidAlgorithmError:
-        abort(400, "Invalid algorithm specified.")
-        print(e)
+
 
 @authRouter.post('/forgot')
 def forgot_password():
@@ -155,8 +154,15 @@ def reset_password():
 
 authRouter.add_url_rule('/reset','reset_password',reset_password,methods=['POST'])
 
+
 @authRouter.route('/verifyToken/<token>')
+@jwt_required(request)
 def verify_token(token):
     print(token)
     return Response("this is route to verify token")
     # may_be needed for verify token
+
+@authRouter.route('/logout')
+def logOut():
+    logout_user()
+    return jsonify({"message":"user logged out successfully"})
