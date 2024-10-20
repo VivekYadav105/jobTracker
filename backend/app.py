@@ -3,6 +3,7 @@ from flask_session import Session
 from flask_cors import CORS
 from dotenv import load_dotenv
 from flask_debugtoolbar import DebugToolbarExtension
+from flask_session import Session
 from flask_pymongo import PyMongo
 from job import jobRouter
 from auth import authRouter
@@ -20,8 +21,10 @@ app.config["JWT_SECRET"] = os.getenv("JWT_SECRET")
 
 app.config["SALT_LENGTH"] = os.getenv("SALT_LENGTH")
 
+app.config["SESSION_TYPE"] = os.getenv("SESSION_TYPE")
+app.config['SESSION_PERMANENT'] = True
+
 # app.config['SESSION_TYPE'] = 'redis'
-# app.config['SESSION_PERMANENT'] = False
 # app.config['SESSION_USE_SIGNER'] = True
 # app.config['SESSION_REDIS'] = redis.from_url('redis://127.0.0.1:6379')
 
@@ -34,6 +37,7 @@ app.config['MAIL_USE_SSL'] = False
 
 mongo = PyMongo(app)
 CORS(app,supports_credentials=True)
+Session(app)
 toolbar = DebugToolbarExtension(app)
 
 

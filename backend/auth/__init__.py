@@ -1,6 +1,6 @@
 from flask import Blueprint,jsonify,Response,request,g,abort
 from flask_mail import Message
-from flask_login import logout_user,login_user
+from flask_login import logout_user,login_user,current_user
 from werkzeug.security import generate_password_hash,check_password_hash
 import os,datetime
 import jsonwebtoken as jwt
@@ -36,6 +36,10 @@ def create_token(payload,**options):
 def decode_token(token):
     return jwt.decode(token,key=g.jwt_secret,algorithms=['HS256'])
 
+@login_manager.user_loader
+def load_user(user_id):
+    return UserSchema.get(user_id)
+
 @authRouter.route('/login',methods=['POST'])
 def login():
     data = request.get_json()
@@ -50,7 +54,11 @@ def login():
         send_verification_email(token,user.get('email'))
         return jsonify({"message":"please verify your account"})
     user['_id'] = str(user['_id'])
-    login_user(UserSchema(**user))
+    print(current_user.is_authenticated)
+    if(current_user.is_authenticated):
+        return jsonify({"message":"User already logged in"})
+    login_user(UserSchema(**user),remember=True,duration=datetime.timedelta(minutes=2))
+
     return jsonify({"message":"User logged in successfully"})
 
 @authRouter.route('/signup',methods=['POST'])
