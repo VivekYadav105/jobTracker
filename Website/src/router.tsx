@@ -6,6 +6,7 @@ import AuthWrapper from "./wrapper/authWrapper";
 import { Login, Signup } from "./pages/auth";
 import Forgot from "./pages/auth/forgot";
 import Reset from "./pages/auth/reset";
+import Verify from "./pages/auth/verify";
 
 const router = createBrowserRouter([
     {
@@ -46,6 +47,10 @@ const router = createBrowserRouter([
                 path:"reset/:token",
                 element:<Reset/>
 
+            },
+            {
+                path:'verify/:token',
+                element:<Verify/>
             }
         ]
     }

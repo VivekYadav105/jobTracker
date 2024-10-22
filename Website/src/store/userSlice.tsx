@@ -2,8 +2,11 @@ import { createSlice } from "@reduxjs/toolkit";
 
 interface user{
     _id:string,
-    name:string,
+    fname:string,
+    lname?:string,
+    socials:{name:string,url:string}[],
     email:string,
+    skills:string[]
     education:[{name:string}],
     area_of_intrest:[{name:string}],
     __v:number
@@ -26,3 +29,4 @@ const userSlice = createSlice({
 })
 
 export default userSlice.reducer
+export const userActions = userSlice.actions

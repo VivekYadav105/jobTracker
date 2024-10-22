@@ -1,4 +1,4 @@
-from flask import Blueprint,jsonify,Response,request,g,abort
+from flask import Blueprint,jsonify,Response,request,g,abort,session
 from flask_mail import Message
 from flask_login import logout_user,login_user,current_user
 from werkzeug.security import generate_password_hash,check_password_hash
@@ -40,6 +40,13 @@ def decode_token(token):
 def load_user(user_id):
     return UserSchema.get(user_id)
 
+@authRouter.route('/check-session', methods=['GET'])
+def check_session():
+    if current_user.is_authenticated:
+        return jsonify({'session_active': True, 'user': current_user.get_parsed_details()}), 200
+    else:
+        return jsonify({'session_active': False}), 401
+
 @authRouter.route('/login',methods=['POST'])
 def login():
     data = request.get_json()
@@ -54,12 +61,13 @@ def login():
         send_verification_email(token,user.get('email'))
         return jsonify({"message":"please verify your account"})
     user['_id'] = str(user['_id'])
-    print(current_user.is_authenticated)
+    print(current_user.get_id())
     if(current_user.is_authenticated):
         return jsonify({"message":"User already logged in"})
-    login_user(UserSchema(**user),remember=True,duration=datetime.timedelta(minutes=2))
-
-    return jsonify({"message":"User logged in successfully"})
+    login_user(UserSchema(**user),remember=True,duration=datetime.timedelta(hours=4))
+    response = jsonify(message='User logged in successfully')
+    response.set_cookie('session', UserSchema(**user).get_id(), httponly=True, secure=True, samesite=None) 
+    return response
 
 @authRouter.route('/signup',methods=['POST'])
 def signup():
@@ -81,10 +89,10 @@ def signup():
                 return jsonify(message='Please click on the link sent to your email',token=token)
         else:
             hash_password = generate_password_hash(data['password'],salt_length=g.salt_length)
-            result = user_collection.insert_one({'email':data['email'],"password":hash_password,'verified':False,'gender':'M',"token":""})
+            result = user_collection.insert_one({'fname':f'{data["fname"]}',"lname":data["lname"] ,'email':data['email'],"password":hash_password,'verified':False,'gender':'M',"token":"","socials":dict(),"education":None,"location":None})
             token = create_token({'_id':str(result.inserted_id)})
             user_collection.update_one({"_id":ObjectId(result.inserted_id)},{"$set":{"token":token}})
-
+            send_verification_email(token,data['email'])
         return jsonify(message='A verification mail is sent to your email')
    
 
@@ -173,4 +181,6 @@ def verify_token(token):
 @authRouter.route('/logout')
 def logOut():
     logout_user()
-    return jsonify({"message":"user logged out successfully"})
+    response = jsonify({"message":"user logged out successfully"})
+    response.delete_cookie('session', httponly=True, secure=True, samesite=None) 
+    return response

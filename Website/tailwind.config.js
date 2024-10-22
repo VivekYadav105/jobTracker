@@ -23,6 +23,21 @@ const config = {
                 backgroundColor: theme('colors.green.500'),
                 borderColor: theme('colors.green.800'),
                 color: theme('colors.green.800'),
+              },
+              '& .danger':{
+                backgroundColor: theme('colors.red.500'),
+                borderColor: theme('colors.red.800'),
+                color: theme('colors.red.800'),
+              },
+              '& .sucess':{
+                backgroundColor: theme('colors.green.500'),
+                borderColor: theme('colors.green.800'),
+                color: theme('colors.green.800'),
+              },
+              '& .warning':{
+                backgroundColor: theme('colors.yellow.500'),
+                borderColor: theme('colors.yellow.800'),
+                color: theme('colors.yellow.800'),
               }
             },
             '.main-button':{

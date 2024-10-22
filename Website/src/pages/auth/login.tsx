@@ -13,13 +13,16 @@ interface formDetails{
 
 const Login = ()=>{
     const {handleSubmit,register,formState,setValue} = useForm<formDetails>()
-
-    const {mutate,isLoading} = useLoginMutation()
+    const {mutate,isLoading,isSuccess} = useLoginMutation()
     const navigate = useNavigate()
     const [showPassword,setShowPassword] = useState(false)
 
     const submitForm = async(data:formDetails)=>{
         mutate(data)
+    }
+
+    if(isSuccess){
+        window.location.href = "/"
     }
 
     const demoCred = ()=>{

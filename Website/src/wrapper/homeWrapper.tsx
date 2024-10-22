@@ -1,16 +1,14 @@
 import { Outlet } from "react-router-dom"
 import Header from "../components/header"
-import { Navigate } from "react-router-dom"
+import { useSessionQuery } from "../api/auth"
 
 const HomeWrapper = ()=>{
 
-    if(!localStorage.getItem('token')){
-        return <Navigate to='/auth/login'/>
-    }
+    const {isSuccess} = useSessionQuery()
 
     return(
         <section className="min-h-screen h-px flex flex-col grow">
-            <Header/>
+            <Header isLoggedIn={isSuccess}/>
             <section className="w-full flex flex-col grow p-5">
                 <Outlet/>
             </section>

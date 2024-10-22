@@ -1,18 +1,34 @@
 import { Link } from "react-router-dom"
 import { GiHamburgerMenu } from "react-icons/gi"
-import { useEffect, useState } from "react"
+import { useMemo, useState } from "react"
+import { useDispatch } from "react-redux"
 import {  useSelector } from "react-redux"
 import { IoMdArrowDropdown } from "react-icons/io"
+import {userActions} from '../store/userSlice'
 import { RootState } from "../store"
+import { BiLogOut } from "react-icons/bi"
+import { logOutApi } from "../api/auth"
 
-const Header:React.FC = ()=>{
+interface HeaderProps{
+    isLoggedIn:boolean
+}
+
+const Header:React.FC<HeaderProps> = ({isLoggedIn})=>{
     const [expanded,setExpanded] = useState(false)
+    const dispatch = useDispatch()
+    const logout = async()=>{
+        await logOutApi()
+        dispatch(userActions.logout())
+    }
 
     const user = useSelector((state:RootState)=>state.user)
 
-    useEffect(()=>{
-        console.log(user);
-    },[user])
+    const shortName = useMemo(() => {
+        if (user?.fname && user?.lname) {
+            return user.fname[0] + user.lname[0];
+        }
+        return null;
+    }, [user]);
 
     return(
         <section className="w-full  bg-white shadow-lg  px-4 py-3 ">
@@ -44,17 +60,25 @@ const Header:React.FC = ()=>{
                         <Link to={'/extenstion'} className="hover:bg-glassBlue border-transparent hover:text-blue border-2 hover:border-blue w-full text-center p-1 rounded-xl">
                             <li>Extenstion</li>
                         </Link>
-                        <button className="hover:bg-glassBlue border-transparent hover:text-blue border-2 hover:border-blue w-full text-center p-1 rounded-xl sm:hidden">Log out</button>
+                        <button onClick={logout} className="hover:bg-glassBlue border-transparent hover:text-blue border-2 hover:border-blue w-full text-center p-1 rounded-xl sm:hidden">Log out</button>
                     </ul>
                     {
-                        user?(
-                            <article className="hidden mx-3 gap-2 sm:flex items-center">
-                                <img className="rounded-full w-6 h-6" src="/avatar.jpg"/>
-                                <span>VY</span>
-                                <span>
-                                    <IoMdArrowDropdown/>
-                                </span>
-                            </article>
+                        isLoggedIn?(
+                            <div className="relative z-[100]">
+                                <button onClick={()=>setExpanded(prev=>!prev)} className="hidden mx-3 p-2 rounded-md group hover:bg-glassBlue gap-2 sm:flex items-center">
+                                    <img className="rounded-full w-6 h-6" src="/avatar.jpg"/>
+                                    <span>{shortName||'user'}</span>
+                                    <span className={`duration-300 ${expanded?"rotate-180":""}`}>
+                                        <IoMdArrowDropdown/>
+                                    </span>
+                                </button>
+                                <article className={`bg-white ${expanded?"":"h-0"}  flex flex-col overflow-hidden absolute top-full right-0 translate-y-3 rounded`}>
+                                    <button onClick={logout} className="icon-button flex items-center gap-2 border-green-500 text-green-500 shadow-none py-2">
+                                        <BiLogOut/>
+                                        LogOut
+                                    </button>
+                                </article>
+                            </div>
                         ):(
                             <Link to={'/auth'}>
                                 <button className="main-button w-fit py-1">Login</button>                            

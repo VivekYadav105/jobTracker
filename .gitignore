@@ -4,3 +4,4 @@ jobs.json
 */**/__pycache__/*
 */**/env
 */**/env/*
+*/**/flask_session
