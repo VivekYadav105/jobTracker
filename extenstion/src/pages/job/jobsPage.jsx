@@ -1,12 +1,11 @@
 import { useCallback, useEffect, useState } from "react"
 import JobElement from '../../components/jobElement'
 import AddForm from "./addForm"
-import React from "react"
 import { useSearchParams } from "react-router-dom"
-import {getJobs,deleteJob, addJob, editJob} from '../../context/db'
+import {getJobs,deleteJob, addJob, editJob} from '../../api/db'
 
 
-const JobsPage = (props)=>{
+const JobsPage = ()=>{
 
     const [jobs,setJobs] = useState([])
     const [currentJob,setCurrentJob] = useState({})

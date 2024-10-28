@@ -1,7 +1,8 @@
 import { HashRouter, Route, Routes } from "react-router-dom"
 import Home from "./pages/Home"
 import { useState,useEffect,useCallback } from "react";
-import initDB from './context/db'
+import initDB from './api/db'
+import Auth from "./pages/auth";
 
 function App() {
   const [isDBReady, setIsDBReady] = useState(false);
@@ -21,6 +22,7 @@ function App() {
           {isDBReady ? (
             <Routes>
               <Route path="/" element={<Home />} />
+              <Route path="/auth" element={<Auth/>}/>
             </Routes>
           ) : (
             <div>Loading...</div> // Show a loading indicator while DB initializes
