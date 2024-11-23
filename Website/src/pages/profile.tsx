@@ -10,6 +10,8 @@ import { RootState } from "../store"
 import ResumePopup from "../components/resumePopUp"
 import SocialsPopup from "../components/socialPopUp"
 import SkillSection from "../components/skillSection"
+import PlatformTile from "../components/platformTile"
+import ApplicationTile from "../components/application"
 
 
 const Profile:React.FC = ()=>{
@@ -132,12 +134,23 @@ const Profile:React.FC = ()=>{
             </div>
             <div className="col-span-12 sm:col-span-6 md:col-span-9 h-full flex flex-col md:flex-row gap-3">
                 <div className="w-full h-full bg-white rounded-lg p-3 gap-2">
-                    <h1>Applied Portals</h1>
-                    <div className=""></div>
+                    <h1 className="border-b-2 mb-4 pb-1">Applied Portals</h1>
+                    <div className="">
+                        <PlatformTile count={2} platformLink={"jobs.google.com"} domain="www.google.com" name="Google"/>
+                    </div>
                 </div>
-                <div className="w-full h-full bg-white rounded-lg p-3 gap-2">
-                    <h1>Recent Applications</h1>
-                    <div className=""></div>
+                <div className="w-full h-full bg-white flex flex-col rounded-lg p-3 gap-2">
+                    <article className="border-b-2 mb-4 pb-1 flex items-center justify-between">
+                        <h1 className="">Recent Applications</h1>
+                        <button className="text-xs underline text-violet-400">View All</button>
+                    </article>
+                    <div className="flex flex-col gap-2 grow h-px overflow-y-auto scrollbar">
+                        <ApplicationTile jobTitle="AI Developer" companyName={"Black Rock"} trackLink={"This is to track"} resumeUploaded={""} appliedOn={""} status={""}/>
+                        <ApplicationTile jobTitle="AI Developer" companyName={"Black Rock"} trackLink={"This is to track"} resumeUploaded={""} appliedOn={""} status={""}/>
+                        <ApplicationTile jobTitle="AI Developer" companyName={"Black Rock"} trackLink={"This is to track"} resumeUploaded={""} appliedOn={""} status={""}/>
+                        <ApplicationTile jobTitle="AI Developer" companyName={"Black Rock"} trackLink={"This is to track"} resumeUploaded={""} appliedOn={""} status={""}/>
+                        <ApplicationTile jobTitle="AI Developer" companyName={"Black Rock"} trackLink={"This is to track"} resumeUploaded={""} appliedOn={""} status={""}/>
+                    </div>
                 </div>
             </div>
             {searchParams.get("educationPanel")=='active'&&(

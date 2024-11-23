@@ -30,9 +30,9 @@ export default defineConfig({
     //     ],
     //   },
     // }),
-    // crx({
-    //   manifest:manifest,
-    // })
+    crx({
+      manifest:manifest,
+    })
   ],
   build:{
     rollupOptions:{

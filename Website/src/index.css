@@ -6,6 +6,7 @@
 :root{
   --pale-green:rgba(152, 251, 152, 0.583);
   --white:floralwhite;
+  --blue:rgb(36, 109, 255);
 }
 
 *{
@@ -18,4 +19,17 @@
 
 body{
   background-color: var(--pale-green);
+}
+
+.scrollbar::-webkit-scrollbar{
+  appearance: none;
+  border: 2px solid var(--white);
+  width: 10px;
+  border-radius: 10px;
+  background-color: var(--white);
+}
+
+.scrollbar::-webkit-scrollbar-thumb{
+  background-color: var(--blue);
+  border-radius:20px
 }
